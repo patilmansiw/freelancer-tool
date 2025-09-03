@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Freelancer Hourly Rate Calculator</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- jsPDF for PDF generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  <!-- Custom styles -->
+  <style>
+    .gradient-bg {
+      background: linear-gradient(135deg, #4f46e5 0%, #10b981 100%);
+    }
+  </style>
+
+  <!-- Google AdSense Global Script -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
+       crossorigin="anonymous"></script>
+
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+  
+  
+  <nav class="bg-white shadow p-4 text-center space-x-4 mb-6">
+    <a href="index.html" class="text-indigo-600">Home</a>
+    <a href="about.html">About</a>
+    <a href="blog.html">Blog</a>
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="terms.html">Terms</a>
+  </nav>
+
+
+
+  <div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <header class="text-center mb-10">
+      <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">Freelancer Hourly Rate Calculator</h1>
+      <p class="text-gray-600 max-w-2xl mx-auto">Calculate your ideal hourly rate based on your financial goals, expenses, and available working hours.</p>
+    </header>
+
+    <!-- Top Ad -->
+    <div class="my-6 text-center">
+      <ins class="adsbygoogle"
+           style="display:block; text-align:center; margin:20px auto;"
+           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+           data-ad-slot="1234567890"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>
+           (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </div>
+
+
+    <div class="flex flex-col lg:flex-row gap-8">
+      <!-- Calculator Form -->
+      <div class="w-full lg:w-1/2 bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">Enter Your Details</h2>
+        <form id="calculator-form" class="space-y-4">
+          <!-- Annual Income -->
+          <div>
+            <label for="annual-income" class="block text-sm font-medium text-gray-700 mb-1">Desired Annual Income ($)</label>
+            <input type="number" id="annual-income" name="annual-income" min="0" step="1000" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+          </div>
+
+          <!-- Annual Expenses -->
+          <div>
+            <label for="annual-expenses" class="block text-sm font-medium text-gray-700 mb-1">Annual Expenses ($)</label>
+            <input type="number" id="annual-expenses" name="annual-expenses" min="0" step="1000" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+          </div>
+
+          <!-- Tax Rate -->
+          <div>
+            <label for="tax-rate" class="block text-sm font-medium text-gray-700 mb-1">Tax Rate (%)</label>
+            <select id="tax-rate" name="tax-rate" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+              <option value="25">US (25%)</option>
+              <option value="20">UK (20%)</option>
+              <option value="22">Canada (22%)</option>
+              <option value="custom">Custom</option>
+            </select>
+            <div id="custom-tax-container" class="mt-2 hidden">
+              <input type="number" id="custom-tax" name="custom-tax" min="0" max="100" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Enter custom tax rate">
+            </div>
+          </div>
+
+          <!-- Savings Goal -->
+          <div>
+            <label for="savings-goal" class="block text-sm font-medium text-gray-700 mb-1">Annual Savings Goal ($) <span class="text-gray-500 text-xs">(Optional)</span></label>
+            <input type="number" id="savings-goal" name="savings-goal" min="0" step="1000" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+
+          <!-- Hours Per Week -->
+          <div>
+            <label for="hours-per-week" class="block text-sm font-medium text-gray-700 mb-1">Hours Per Week: <span id="hours-value">40</span></label>
+            <input type="range" id="hours-per-week" name="hours-per-week" min="10" max="60" value="40" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+          </div>
+
+          <!-- Vacation Weeks -->
+          <div>
+            <label for="vacation-weeks" class="block text-sm font-medium text-gray-700 mb-1">Vacation Weeks Per Year: <span id="vacation-value">4</span></label>
+            <input type="range" id="vacation-weeks" name="vacation-weeks" min="0" max="12" value="4" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+          </div>
+
+          <!-- Currency Selection -->
+          <div>
+            <label for="currency" class="block text-sm font-medium text-gray-700 mb-1">Currency</label>
+            <select id="currency" name="currency" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+              <option value="USD">USD ($)</option>
+              <option value="GBP">GBP (£)</option>
+              <option value="EUR">EUR (€)</option>
+            </select>
+          </div>
+
+          <!-- Calculate Button -->
+          <div>
+            <button type="submit" class="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150">Calculate Hourly Rate</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Results Section (Initially Hidden) -->
+      <div id="results-section" class="w-full lg:w-1/2 bg-white rounded-lg shadow-md p-6 hidden">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">Your Results</h2>
+        
+        <!-- Main Result -->
+        <div class="gradient-bg rounded-lg p-6 text-center mb-6">
+          <h3 class="text-white text-lg font-medium mb-2">Your Suggested Hourly Rate</h3>
+          <p id="hourly-rate-result" class="text-white text-4xl font-bold">$0.00/hr</p>
+        </div>
+
+        <!-- Detailed Breakdown -->
+        <div class="space-y-4 mb-6">
+          <h3 class="text-lg font-medium text-gray-800">Calculation Breakdown</h3>
+          
+          <div class="bg-gray-50 p-4 rounded-md">
+            <div class="grid grid-cols-2 gap-2 text-sm">
+              <div class="text-gray-600">Working Weeks:</div>
+              <div id="working-weeks-result" class="font-medium text-gray-800">48 weeks</div>
+              
+              <div class="text-gray-600">Total Billable Hours:</div>
+              <div id="total-hours-result" class="font-medium text-gray-800">1,920 hours</div>
+              
+              <div class="text-gray-600">Gross Requirement:</div>
+              <div id="gross-requirement-result" class="font-medium text-gray-800">$0</div>
+              
+              <div class="text-gray-600">Net Requirement:</div>
+              <div id="net-requirement-result" class="font-medium text-gray-800">$0</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Savings Projection -->
+        <div id="savings-projection" class="bg-green-50 p-4 rounded-md mb-6 hidden">
+          <h3 class="text-lg font-medium text-gray-800 mb-2">Savings Projection</h3>
+          <p id="savings-projection-text" class="text-gray-700"></p>
+        </div>
+
+        <!-- Email Capture for PDF -->
+        <div class="border-t pt-4 mt-4">
+          <h3 class="text-lg font-medium text-gray-800 mb-2">Get Your PDF Report</h3>
+          <div class="flex space-x-2">
+            <input type="email" id="email-input" placeholder="Enter your email" class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <button id="send-pdf-btn" class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150">Send PDF</button>
+          </div>
+          <div class="mt-2">
+            <button id="download-pdf-btn" class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150">Download PDF</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Affiliate Links Section -->
+    <div id="affiliate-section" class="mt-12 bg-white rounded-lg shadow-md p-6 hidden">
+      <h2 class="text-xl font-semibold text-gray-800 mb-4">Recommended Tools for Freelancers</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- Tool 1 -->
+        <div class="border rounded-lg p-4 text-center hover:shadow-md transition duration-150">
+          <img src="https://via.placeholder.com/100x50?text=FreshBooks" alt="FreshBooks" class="mx-auto mb-3">
+          <h3 class="font-medium text-gray-800 mb-1">FreshBooks</h3>
+          <p class="text-sm text-gray-600 mb-3">Professional invoicing and accounting software for freelancers.</p>
+          <a href="#" class="inline-block px-4 py-2 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 transition duration-150">Try Free</a>
+        </div>
+        
+        <!-- Tool 2 -->
+        <div class="border rounded-lg p-4 text-center hover:shadow-md transition duration-150">
+          <img src="https://via.placeholder.com/100x50?text=Wise" alt="Wise" class="mx-auto mb-3">
+          <h3 class="font-medium text-gray-800 mb-1">Wise</h3>
+          <p class="text-sm text-gray-600 mb-3">Save on international payments and get paid in multiple currencies.</p>
+          <a href="#" class="inline-block px-4 py-2 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 transition duration-150">Learn More</a>
+        </div>
+        
+        <!-- Tool 3 -->
+        <div class="border rounded-lg p-4 text-center hover:shadow-md transition duration-150">
+          <img src="https://via.placeholder.com/100x50?text=Fiverr" alt="Fiverr" class="mx-auto mb-3">
+          <h3 class="font-medium text-gray-800 mb-1">Fiverr</h3>
+          <p class="text-sm text-gray-600 mb-3">Find clients and grow your freelance business globally.</p>
+          <a href="#" class="inline-block px-4 py-2 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 transition duration-150">Join Now</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Email Success Message (Initially Hidden) -->
+    <div id="email-success" class="fixed inset-0 flex items-center justify-center z-50 hidden">
+      <div class="absolute inset-0 bg-black opacity-50"></div>
+      <div class="bg-white rounded-lg p-6 max-w-md w-full relative z-10">
+        <h3 class="text-xl font-semibold text-gray-800 mb-2">Success!</h3>
+        <p class="text-gray-600 mb-4">Your PDF report has been sent to your email.</p>
+        <button id="close-success-btn" class="w-full px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition duration-150">Close</button>
+      </div>
+    </div>
+
+    
+    <!-- Bottom Ad -->
+    <div class="my-6 text-center">
+      <ins class="adsbygoogle"
+           style="display:block; text-align:center; margin:20px auto;"
+           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+           data-ad-slot="9876543210"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>
+           (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </div>
+
+    
+<section class="mt-10 bg-white p-6 rounded-lg shadow-md">
+  <h2 class="text-xl font-bold mb-4">Why Use the Freelancer Tool?</h2>
+  <p class="mb-4">
+    As a freelancer, knowing your true hourly rate is essential. Many freelancers undercharge
+    because they don’t account for hidden costs like taxes, software, or time spent on
+    non-billable tasks. Our Freelancer Tool helps you calculate a fair hourly rate that covers
+    your expenses, meets your income goals, and ensures long-term sustainability.
+  </p>
+
+  <h2 class="text-xl font-bold mb-4">How It Works</h2>
+  <p class="mb-4">
+    Simply enter your expected monthly income, business expenses, tax rate, and working hours.
+    The calculator instantly shows you how much you should charge per hour to reach your goals.
+    It’s fast, simple, and 100% free to use.
+  </p>
+
+  <h2 class="text-xl font-bold mb-4">Who Can Benefit?</h2>
+  <ul class="list-disc pl-6 mb-4">
+    <li>Freelancers just starting their career</li>
+    <li>Experienced professionals adjusting their rates</li>
+    <li>Agencies and consultants</li>
+    <li>Anyone working independently who needs to calculate fair pricing</li>
+  </ul>
+
+  <p>
+    This tool is free and always will be. We support the site through Google AdSense
+    advertisements, so you can continue using it without any cost.
+  </p>
+</section>
+
+    
+<!-- Freelancer Type & Average Fiverr Rates -->
+<section class="mt-10 bg-white rounded-lg shadow p-6">
+  <h2 class="text-xl font-semibold mb-2">What kind of freelancer are you?</h2>
+  <p class="text-gray-600 mb-4">Select your category to see typical Fiverr price ranges. Use this as a reference and set your own rate based on experience, niche, and demand.</p>
+  <label for="freelancer-type" class="block font-medium">Freelancer Type</label>
+  <select id="freelancer-type" class="border p-2 rounded mt-2 w-full md:w-1/2">
+    <option value="">-- Select --</option>
+    <option value="web">Web Designer</option>
+    <option value="graphic">Graphic Designer</option>
+    <option value="writer">Content Writer</option>
+    <option value="seo">SEO Expert</option>
+    <option value="marketing">Digital Marketer</option>
+  </select>
+  <p id="avg-rate" class="mt-4 text-gray-800 font-medium"></p>
+  <p class="mt-2 text-sm text-gray-500">Source: Aggregated ranges from Fiverr guides and marketplace data.</p>
+</section>
+
+<script>
+  (function(){
+    var avg = {
+      web: "$30–$200/hr",
+      graphic: "$25–$180/hr (logos often $55–$125/project)",
+      writer: "~$23/hr",
+      seo: "$50–$200/hr",
+      marketing: "$25–$230+/hr"
+    };
+    var select = document.getElementById('freelancer-type');
+    if (select) {
+      select.addEventListener('change', function(){
+        var v = this.value;
+        var el = document.getElementById('avg-rate');
+        el.textContent = v ? ("Average on Fiverr: " + avg[v]) : "";
+      });
+    }
+  })();
+</script>
+
+    <!-- Footer -->
+    <footer class="mt-12 text-center text-gray-500 text-sm">
+      <p>&copy; 2023 Freelancer Hourly Rate Calculator. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- Main JavaScript -->
+  <script src="app.js"></script>
+
+<!-- Cookie Consent (Light, bottom; auto-hide on mobile) -->
+<div id="cookie-banner" class="fixed bottom-0 left-0 w-full bg-white text-gray-800 border-t border-gray-200 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 shadow z-50">
+  <span class="text-sm">We use cookies to improve your experience. By using this site, you accept our <a href="privacy.html" class="underline">Privacy Policy</a>.</span>
+  <div class="flex items-center gap-3">
+    <button id="cookie-accept" class="bg-indigo-600 text-white px-4 py-2 rounded">Accept</button>
+  </div>
+</div>
+<script>
+  (function(){
+    var key = "cookiesAccepted";
+    var banner = document.getElementById('cookie-banner');
+    function hide(){ if(banner) banner.style.display = 'none'; }
+    try{
+      if(localStorage.getItem(key)) { hide(); }
+      var btn = document.getElementById('cookie-accept');
+      if(btn){ btn.addEventListener('click', function(){ localStorage.setItem(key,'true'); hide(); }); }
+      // Auto-hide on mobile (<=640px) after 10s if not interacted
+      setTimeout(function(){
+        if (window.matchMedia && window.matchMedia('(max-width: 640px)').matches && !localStorage.getItem(key)) {
+          hide();
+        }
+      }, 10000);
+    } catch(e){}
+  })();
+</script>
+
+</body>
+</html>
